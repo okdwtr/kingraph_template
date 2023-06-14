@@ -23,10 +23,12 @@ jobs:
         run: npm install -g rstacruz/kingraph
       - name: Plot family trees
         run: |
+          rename="for file in '*.yml.${{ matrix.format }}'; { mv "$file" "${file%%.yml.${{ matrix.format }}}.${{ matrix.format }}"; }"
+          echo $rename
           find . -maxdepth 1 -name "*.yml" \
             -exec kingraph --format=${{ matrix.format }} {} > temp.${{ matrix.format }} \; \
             -exec mv temp.${{ matrix.format }} {}.${{ matrix.format }} \; \
-            -exec bash -c "for file in '*.yml.${{ matrix.format }}'; { mv "$file" "${file%%.yml.${{ matrix.format }}}.${{ matrix.format }}"; }"
+            -exec bash -c $rename
       - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
