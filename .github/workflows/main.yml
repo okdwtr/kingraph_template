@@ -5,6 +5,7 @@ on:
     paths:
       - '**.yml'#すべてのymlを含む
       - '*.yml' #ルートのymlのみ
+      - '*.yaml'
 
 jobs:
   plot:
