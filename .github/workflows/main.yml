@@ -1,5 +1,9 @@
 name: Plots family trees
-on: [push]
+on:
+  push:
+    paths:
+      - '**.yml'#すべてのymlを含む
+      - '*.yml' #ルートのymlのみ
 jobs:
   plot:
     permissions:
