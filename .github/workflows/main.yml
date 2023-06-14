@@ -10,7 +10,8 @@ jobs:
       - name: Plot family trees
         run: |
           find . -maxdepth 1 -name "*.yml" -exec kingraph --format=svg {} > temp.svg \; -exec mv temp.svg {}.svg \;
-          rename yml.svg svg *.yml.svg
+          for file in *.yml.svg; { mv "$file" "${file%%.yml.svg}.svg"; }
+          #rename yml.svg svg *.yml.svg
           ls -al
       - uses: actions/upload-artifact@v3
         with:
