@@ -1,0 +1,16 @@
+name: Plots family trees
+on: [push]
+jobs:
+  plot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install rstacruz/kingraph
+        run: npm install -g rstacruz/kingraph
+      - name: Plot family trees
+        run: |
+          kingraph family.yml > family.svg
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: family.svg
