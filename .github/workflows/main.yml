@@ -8,6 +8,10 @@ jobs:
   plot:
     permissions:
       contents: write
+    strategy:
+      matrix:
+        format: [svg]
+        #format: [svg, png, dot]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,16 +19,17 @@ jobs:
         run: npm install -g rstacruz/kingraph
       - name: Plot family trees
         run: |
-          find . -maxdepth 1 -name "*.yml" -exec kingraph --format=svg {} > temp.svg \; -exec mv temp.svg {}.svg \;
-          for file in *.yml.svg; { mv "$file" "${file%%.yml.svg}.svg"; }
+          find . -maxdepth 1 -name "*.yml" -exec kingraph --format=${{ matrix.format }} {} > temp.${{ matrix.format }} \; -exec mv temp.${{ matrix.format }} {}.${{ matrix.format }} \;
+          for file in *.yml.${{ matrix.format }}; { mv "$file" "${file%%.yml.${{ matrix.format }}}.${{ matrix.format }}"; }
           ls -al
       - uses: actions/upload-artifact@v3
         with:
-          path: '**.svg'
+          name: Artifacts
+          path: '**.${{ matrix.format }}'
       - name: Check diff
         id: diff
         run: |
-          git add -N *.svg
+          git add -N *.${{ matrix.format }}
           git diff --name-only --exit-code
         continue-on-error: true
       - name: Commit & Push
