@@ -9,8 +9,8 @@ jobs:
         run: npm install -g rstacruz/kingraph
       - name: Plot family trees
         run: |
-          find . -maxdepth 1 -name "*.yml" -exec kingraph --format=svg {} > {} .svg \;
-          ls -alR
+          find . -maxdepth 1 -name "*.yml" -exec kingraph --format=svg {} > temp.svg \; -exec mv temp.svg {}.svg \;
+          ls -al
       - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
