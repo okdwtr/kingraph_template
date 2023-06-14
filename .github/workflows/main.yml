@@ -2,6 +2,8 @@ name: Plots family trees
 on: [push]
 jobs:
   plot:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
