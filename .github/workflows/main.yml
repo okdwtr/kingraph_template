@@ -10,7 +10,8 @@ jobs:
       - name: Plot family trees
         run: |
           find . -maxdepth 1 -name "*.yml" -exec kingraph --format=svg {} > {}.svg \;
+          ls -alR
       - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
-          path: family.yml.svg
+          path: '**.svg'
