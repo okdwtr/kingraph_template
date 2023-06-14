@@ -27,8 +27,8 @@ jobs:
           find . -maxdepth 1 -name "*.yml" -or -name "*.yaml" \
             -exec kingraph --format=${{ matrix.format }} {} > temp.${{ matrix.format }} \; \
             -exec mv temp.${{ matrix.format }} {}.${{ matrix.format }} \; \
-          for file in *.yml.${{ matrix.format }}; { mv "$file" "${file%%.yml.${{ matrix.format }}}.${{ matrix.format }}"; }
-          for file in *.yaml.${{ matrix.format }}; { mv "$file" "${file%%.yaml.${{ matrix.format }}}.${{ matrix.format }}"; }
+          for file in '*.yml.${{ matrix.format }}'; { mv "$file" "${file%%.yml.${{ matrix.format }}}.${{ matrix.format }}"; }
+          for file in '*.yaml.${{ matrix.format }}'; { mv "$file" "${file%%.yaml.${{ matrix.format }}}.${{ matrix.format }}"; }
       - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
