@@ -16,16 +16,18 @@ jobs:
         with:
           name: Artifacts
           path: '**.svg'
-      - name: Count changes
-        id: changes
+      - name: Check diff
+        id: diff
         run: |
-          git add -N *.svg # 新規ファイルを含める
-          echo "::set-output name=count::$(git diff --name-only | wc -l)"
-      - name: commit & push
+          git add -N *.svg
+          git diff --name-only --exit-code
+        continue-on-error: true
+      - name: Commit & Push
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          set -x
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
-          git commit -m "Update image"
+          git commit --author=. -m 'Update image'
           git push
-        if: steps.changes.outputs.count > 0
+        if: steps.diff.outcome == 'failure'
