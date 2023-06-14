@@ -1,18 +1,22 @@
 name: Plots family trees
+
 on:
   push:
     paths:
       - '**.yml'#すべてのymlを含む
       - '*.yml' #ルートのymlのみ
+
 jobs:
   plot:
     permissions:
       contents: write
+
     strategy:
       matrix:
-        format: [svg]
-        #format: [svg, png, dot]
+        format: [svg] # Available in 3 types: svg, png, dot
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Install rstacruz/kingraph
