@@ -24,8 +24,7 @@ jobs:
       - name: Plot family trees
         run: |
           for file in `find . -maxdepth 1 -name "*.yml"`; do
-            kingraph --format=${{ matrix.format }} "$file" > temp.${{ matrix.format }}
-            mv temp.${{ matrix.format }} "${file%%.yml}.${{ matrix.format }}"
+            kingraph --format=${{ matrix.format }} "$file" > "${file%%.yml}.${{ matrix.format }}"
           done
           ls -al
       - uses: actions/upload-artifact@v3
