@@ -1,0 +1,56 @@
+name: Create github release
+
+on:
+  push:
+    tags:
+      - '**'
+    paths: #for test
+      - '**.yml' #for test
+
+jobs:
+  plot:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        format: [svg, png, dot] # Available in 3 types: svg, png, dot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install rstacruz/kingraph
+        run: npm install -g rstacruz/kingraph
+      - name: Plot family trees
+        run: |
+          for file in `find . -maxdepth 1 -name "*.yml"`; do
+            kingraph --format=${{ matrix.format }} "$file" > "${file%%.yml}.${{ matrix.format }}"
+          done
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: '**.${{ matrix.format }}'
+
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: plot
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: Artifacts
+          path: Artifacts
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: test #default is tag name
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          prerelease: true
+          files: |
+            ${{steps.download.outputs.download-path}}/*
