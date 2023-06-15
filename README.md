@@ -14,9 +14,6 @@ This is a copy of [Modern Family](https://github.com/rstacruz/kingraph/blob/mast
    You can also add a new yaml file or rename the yaml file
 1. Commit and push changes  
    CI runs automatically and updates the family tree
-1. Create the tag and push it  
-   CI create a Github Release with latest image of the family tree  
-   You can look back it any time
 
 ## Related links
 - [kingraph](https://github.com/rstacruz/kingraph)
