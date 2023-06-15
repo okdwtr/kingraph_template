@@ -1,0 +1,48 @@
+name: Plots family trees
+
+on:
+  push:
+    paths:
+      - '**.yml'
+
+jobs:
+  plot:
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        format: [svg] # Available in 3 types: svg, png, dot
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install rstacruz/kingraph
+        run: npm install -g rstacruz/kingraph
+      - name: Plot family trees
+        run: |
+          for file in `find . -maxdepth 1 -name "*.yml"`; do
+            kingraph --format=${{ matrix.format }} "$file" > "${file%%.yml}.${{ matrix.format }}"
+          done
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: '**.${{ matrix.format }}'
+      - name: Check diff
+        id: diff
+        run: |
+          git add -N *.${{ matrix.format }}
+          git diff --name-only --exit-code
+        continue-on-error: true
+      - name: Commit & Push
+        run: |
+          set -x
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit --author=. -m 'Update image'
+          git push
+        if: steps.diff.outcome == 'failure'
